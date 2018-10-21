@@ -2,8 +2,9 @@
   <div id="app">
     <div class="nav" id="nav">
       <router-link to="/">Home</router-link> |
+      <router-link to="/todo">Vue-do</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/todo">Vue-do</router-link>
+      <router-link to="/contact">Contact</router-link>
     </div>
 
     <router-view/>
@@ -26,6 +27,8 @@ export default {
   margin-top: 60px;
 }
 .nav {
-  font-weight: 400;
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 </style>

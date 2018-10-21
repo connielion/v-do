@@ -11,14 +11,14 @@
     <!--if logged in-->
 
     <div v-if="this.isLoggedIn">
-        <h2>Hi</h2>
+        <h2>Hi {{ user.name }}</h2>
         <button class="button button-outline logoutbtn" @click="logout()">Logout</button>
     </div>
   </div>
 </template>
 
 <script>
-import { login, isLoggedIn, logout } from "../util/auth.js";
+import { login, isLoggedIn, getProfile, logout } from "../util/auth.js";
 
 export default {
   name: "HelloWorld",
@@ -36,7 +36,8 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: isLoggedIn()
+      isLoggedIn: isLoggedIn(),
+      user: getProfile()
     };
   }
 };

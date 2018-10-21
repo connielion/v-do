@@ -5,8 +5,10 @@ const webAuth = new auth0.WebAuth({
   clientID: "RHI76KRMrt9X1y1lnBDpizL7wD7kZ31I",
   redirectUri: "http://localhost:8080/callback",
   responseType: "token id_token",
-  scope: "openid"
+  scope: "openid profile"
 });
+
+let profile = {};
 
 let tokens = {};
 
@@ -24,12 +26,17 @@ const logout = () => {
   tokens = {};
 };
 
+const getProfile = () => {
+  return profile;
+};
+
 const handleAuth = cb => {
   webAuth.parseHash((err, authResult) => {
     if (authResult && authResult.accessToken && authResult.idToken) {
       tokens.accessToken = authResult.accessToken;
       tokens.idToken = authResult.idToken;
       tokens.expiry = new Date().getTime() + authResult.expiresIn * 1000;
+      profile = authResult.idTokenPayload;
       cb();
     } else {
       console.log(err);
@@ -37,4 +44,4 @@ const handleAuth = cb => {
   });
 };
 
-export { login, logout, handleAuth, isLoggedIn };
+export { login, logout, handleAuth, isLoggedIn, getProfile };
