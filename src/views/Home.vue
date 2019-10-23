@@ -1,9 +1,7 @@
 <template>
   <div class="home">
-
-    <img src="../assets/logo.png" alt="vue logo" class="logo">
-    <HelloWorld msg="Wecome to V-do" />
-
+    <img src="../assets/logo.png" alt="vue logo" class="logo" />
+    <HelloWorld msg="Wecome to Vuedo" />
   </div>
 </template>
 

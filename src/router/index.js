@@ -1,55 +1,94 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Home from "../views/Home.vue";
-
-import { isLoggedIn } from "../util/auth";
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from '@/views/Home.vue';
+import Login from '@/components/Login';
+import Register from '@/components/Register';
+import Todo from '@/views/Todo';
+import firebase from 'firebase';
 
 Vue.use(Router);
 
-function requireAuth(to, from, next) {
-  if (!isLoggedIn()) {
-    next({
-      path: "/unauthorized"
-    });
-  } else {
-    next();
-  }
-}
-
-export default new Router({
-  mode: "history",
+let router = new Router({
+  mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
-      name: "home",
+      path: '/',
+      name: 'home',
       component: Home
     },
     {
-      path: "/about",
-      name: "about",
-      component: () => import("../views/About.vue")
+      path: '/login',
+      name: 'login',
+      component: Login,
+      meta: {
+        requiresGuest: true
+      }
     },
     {
-      path: "/contact",
-      name: "contact",
-      component: () => import("../views/Contact.vue")
+      path: '/register',
+      name: 'register',
+      component: Register,
+      meta: {
+        requiresGuest: true
+      }
     },
     {
-      path: "/todo",
-      name: "todo",
-      beforeEnter: requireAuth,
-      component: () => import("../views/Todo.vue")
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/About.vue')
     },
     {
-      path: "/callback",
-      name: "callback",
-      component: () => import("../views/Callback.vue")
+      path: '/contact',
+      name: 'contact',
+      component: () => import('../views/Contact.vue')
     },
     {
-      path: "/unauthorized",
-      name: "unauthorized",
-      component: () => import("../views/Unauthorized.vue")
+      path: '/todo',
+      name: 'todo',
+      component: Todo,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 });
+
+// nav guards
+router.beforeEach((to, from, next) => {
+  // Check for requiresAuth guard
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // Check if NO logged user
+    if (!firebase.auth().currentUser) {
+      // Go to login
+      next({
+        path: '/login',
+        query: {
+          redirect: to.fullPath
+        }
+      });
+    } else {
+      // Proceed to route
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    // Check if NO logged user
+    if (firebase.auth().currentUser) {
+      // Go to login
+      next({
+        path: '/login',
+        query: {
+          redirect: to.fullPath
+        }
+      });
+    } else {
+      // Proceed to route
+      next();
+    }
+  } else {
+    // Proceed to route
+    next();
+  }
+});
+
+export default router;
